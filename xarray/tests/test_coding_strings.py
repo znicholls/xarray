@@ -36,13 +36,10 @@ def test_vlen_dtype():
     assert strings.check_vlen_dtype(np.dtype(object)) is None
 
 
-@pytest.mark.parametrize("str_type", (str, np.str_))
-def test_numpy_str_handling(str_type):
-    dtype = strings.create_vlen_dtype(str_type)
-    assert dtype.metadata["element_type"] == str_type
-    assert strings.is_unicode_dtype(dtype)
-    assert not strings.is_bytes_dtype(dtype)
-    assert strings.check_vlen_dtype(dtype) is str_type
+@pytest.mark.parametrize("numpy_str_type", (np.str_, np.bytes_))
+def test_numpy_subclass_handling(numpy_str_type):
+    with pytest.raises(TypeError, match="unsupported type for vlen_dtype"):
+        strings.create_vlen_dtype(numpy_str_type)
 
 
 @requires_netCDF4
